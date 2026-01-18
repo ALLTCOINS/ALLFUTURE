@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W61R3WYRB5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W61R3WYRB5');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ALLTCOINS.COM | Precios Cripto en Vivo</title>
+  <meta name="description" content="Seguí precios de Bitcoin, Ethereum, Solana y +250 altcoins en tiempo real. Capitalización de mercado, volumen de trading e índice Fear & Greed." />
+
+  <!-- Favicon SVG (tu logo "A" cyan) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'><path d='M50 5 L10 85 H32 L50 45 L68 85 H90 L50 5 Z M46 85 L46 60 H54 L54 85 H46 Z' fill='%2300f3ff'/></svg>" />
+
+  <!-- PWA -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ALLTCOINS" />
+  <meta name="application-name" content="ALLTCOINS" />
+  <meta name="theme-color" content="#010409" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alltcoins.com/" />
+  <meta property="og:title" content="ALLTCOINS.COM – Precios Cripto en Vivo" />
+  <meta property="og:description" content="Seguí precios de Bitcoin, Ethereum, Solana y +250 altcoins en tiempo real. Capitalización de mercado, volumen de trading e índice Fear & Greed." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1640340434855-6084b1f4901c?q=80&w=1600&auto=format&fit=crop" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+          colors: {
+            brand: { primary: '#00f3ff', secondary: '#39ff14', tertiary: '#0f172a', dark: '#010409', surface: '#0d1117', border: '#1e293b' }
+          },
+          animation: { 'breathe': 'breathe 8s ease-in-out infinite' },
+          keyframes: {
+            breathe: { '0%, 100%': { opacity: '0.4', transform: 'scale(1)' }, '50%': { opacity: '0.7', transform: 'scale(1.1)' } }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .ambient-orb { position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,243,255,0.08) 0%, rgba(255,255,255,0.02) 40%, transparent 70%); filter: blur(80px); z-index: -1; pointer-events: none; animation: breathe 8s infinite alternate; }
+    .ambient-orb-white { position: fixed; bottom: -10%; right: -10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); filter: blur(60px); z-index: -1; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) { .ambient-orb, .ambient-orb-white { animation: none !important; } }
+  </style>
+</head>
+<body class="bg-[#010409] text-white overflow-x-hidden">
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb-white"></div>
+
+  <header class="p-6 flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-[#00f3ff]">ALLTCOINS.COM</h1>
+    <button id="theme-toggle" class="px-4 py-2 bg-[#0f172a] rounded hover:bg-[#1e293b]">Modo oscuro</button>
+  </header>
+
+  <main class="p-6">
+    <h2 class="text-2xl mb-4">Precios en Vivo</h2>
+    <div id="prices" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+  </main>
+
+  <script type="module">
+    const pricesDiv = document.getElementById('prices');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    // Dark mode toggle
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? 'Modo claro' : 'Modo oscuro';
+    });
+
+    // Fetch precios (proxy para evitar CORS)
+    const proxy = 'https://api.allorigins.win/raw?url=';
+    const url = proxy + encodeURIComponent('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd');
+
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+        const coins = [
+          { id: 'bitcoin', name: 'Bitcoin', price: data.bitcoin.usd },
+          { id: 'ethereum', name: 'Ethereum', price: data.ethereum.usd },
+          { id: 'solana', name: 'Solana', price: data.solana.usd }
+        ];
+
+        pricesDiv.innerHTML = coins.map(c => `
+          <div class="bg-[#0d1117] p-6 rounded-lg shadow-lg hover:shadow-[#00f3ff]/30 transition">
+            <h3 class="text-xl font-bold text-[#00f3ff]">${c.name}</h3>
+            <p class="text-3xl mt-2">$${c.price.toLocaleString()}</p>
+          </div>
+        `).join('');
+      })
+      .catch(e => {
+        pricesDiv.innerHTML = '<p class="text-red-400">Error al cargar precios. Intenta de nuevo.</p>';
+      });
+  </script>
+</body>
+</html>
