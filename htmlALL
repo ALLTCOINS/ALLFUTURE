@@ -1,0 +1,58 @@
+<!-- ... todo el head y body que ya tenés ... -->
+
+<body class="bg-slate-50 text-slate-900 dark:bg-[#010409] dark:text-slate-100 overflow-x-hidden selection:bg-brand-primary selection:text-black">
+  <div class="ambient-orb"></div>
+  <div class="ambient-orb-white"></div>
+
+  <header class="p-6 flex justify-between items-center">
+    <h1 class="text-3xl font-bold text-[#00f3ff]">ALLTCOINS.COM</h1>
+    <button id="theme-toggle" class="px-4 py-2 bg-[#0f172a] rounded hover:bg-[#1e293b]">Modo oscuro</button>
+  </header>
+
+  <main class="p-6">
+    <h2 class="text-2xl mb-4">Precios en Vivo</h2>
+    <div id="prices" class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center"></div>
+  </main>
+
+  <script type="module">
+    const pricesDiv = document.getElementById('prices');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? 'Modo claro' : 'Modo oscuro';
+    });
+
+    const proxy = 'https://api.allorigins.win/raw?url=';
+    const url = proxy + encodeURIComponent('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tether,binancecoin,ripple&vs_currencies=usd');
+
+    async function loadPrices() {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const coins = [
+          { name: 'Bitcoin', price: data.bitcoin.usd },
+          { name: 'Ethereum', price: data.ethereum.usd },
+          { name: 'Solana', price: data.solana.usd },
+          { name: 'Tether', price: data.tether.usd },
+          { name: 'BNB', price: data.binancecoin.usd },
+          { name: 'Ripple', price: data.ripple.usd }
+        ];
+
+        pricesDiv.innerHTML = coins.map(c => `
+          <div class="bg-[#0d1117] p-6 rounded-lg shadow-lg hover:shadow-[#00f3ff]/30 transition">
+            <h3 class="text-xl font-bold text-[#00f3ff]">${c.name}</h3>
+            <p class="text-3xl mt-2 font-mono">$${c.price.toLocaleString()}</p>
+          </div>
+        `).join('');
+      } catch (e) {
+        pricesDiv.innerHTML = '<p class="text-red-400">Error al cargar precios. Intenta de nuevo.</p>';
+      }
+    }
+
+    loadPrices();
+    setInterval(loadPrices, 10000); // actualiza cada 10s
+  </script>
+</body>
+</html>
